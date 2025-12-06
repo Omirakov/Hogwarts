@@ -20,34 +20,34 @@ public class StudentController {
 
     @GetMapping("/{id}")
     public Student getStudent(@PathVariable Long id) {
-        return studentService.get(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Студент с ID: " + id + ", не найден"));
+        return studentService.getStudent(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Студент с ID: " + id + ", не найден"));
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public Collection<Student> getAllStudents() {
-        return studentService.getAll();
+        return studentService.getAllStudents();
     }
 
     @GetMapping(params = "age")
     public Collection<Student> getStudentsByAge(@RequestParam int age) {
-        return studentService.getByAge(age);
+        return studentService.getStudentByAge(age);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Student addStudent(@RequestBody Student student) {
-        return studentService.add(student);
+        return studentService.addStudent(student);
     }
 
     @PutMapping
     public Student updateStudent(@RequestBody Student student) {
-        return studentService.update(student).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Студент с ID: " + student.getId() + ", не найден"));
+        return studentService.updateStudent(student).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Студент с ID: " + student.getId() + ", не найден"));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteStudent(@PathVariable Long id) {
-        if (!studentService.delete(id).isPresent()) {
+        if (!studentService.deleteStudent(id).isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Студент с ID: " + id + ", не найден");
         }
     }

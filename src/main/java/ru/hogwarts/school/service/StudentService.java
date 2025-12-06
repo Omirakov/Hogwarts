@@ -2,48 +2,52 @@ package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
 
-    private final HashMap<Long, Student> studentHashMap = new HashMap<>();
-    private final AtomicLong nextId = new AtomicLong(1);
+    private final StudentRepository studentRepository;
 
-    public Student add(Student student) {
-        long id = nextId.getAndIncrement();
-        student.setId(id);
-        studentHashMap.put(id, student);
-        return student;
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
 
-    public Optional<Student> get(Long id) {
-        return Optional.ofNullable(studentHashMap.get(id));
+    public Student addStudent(Student student) {
+        return studentRepository.save(student);
     }
 
-    public Collection<Student> getAll() {
-        return studentHashMap.values();
+    public Optional<Student> getStudent(Long id) {
+        return studentRepository.findById(id);
     }
 
-    public Collection<Student> getByAge(int age) {
-        return studentHashMap.values().stream().filter(student -> student.getAge() == age).collect(Collectors.toList());
+    public Collection<Student> getAllStudents() {
+        return studentRepository.findAll();
     }
 
-    public Optional<Student> update(Student student) {
-        if (studentHashMap.containsKey(student.getId())) {
-            studentHashMap.put(student.getId(), student);
-            return Optional.of(student);
+    public Collection<Student> getStudentByAge(int age) {
+        return studentRepository.findByAge(age);
+    }
+
+    public Optional<Student> updateStudent(Student student) {
+        if (student.getId() == null) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        if (!studentRepository.existsById(student.getId())) {
+            return Optional.empty();
+        }
+        Student updated = studentRepository.save(student);
+        return Optional.of(updated);
     }
 
-    public Optional<Student> delete(Long id) {
-        Student removedStudent = studentHashMap.remove(id);
-        return Optional.ofNullable(removedStudent);
+    public Optional<Student> deleteStudent(Long id) {
+        Optional<Student> student = studentRepository.findById(id);
+        if (student.isPresent()) {
+            studentRepository.deleteById(id);
+        }
+        return student;
     }
 }
