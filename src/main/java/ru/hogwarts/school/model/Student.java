@@ -17,6 +17,10 @@ public class Student {
     @Column(nullable = false)
     private int age;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "faculty_id")
+    private Faculty faculty;
+
     public Student() {
     }
 
@@ -57,20 +61,28 @@ public class Student {
         this.age = age;
     }
 
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
+
     @Override
     public String toString() {
-        return "Student{" + "id=" + id + ", name='" + name + '\'' + ", age=" + age + '}';
+        return "Student{" + "id=" + id + ", name='" + name + '\'' + ", age=" + age + ", faculty=" + (faculty != null ? faculty.getName() : "null") + '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Student student)) return false;
-        return age == student.age && Objects.equals(id, student.id) && Objects.equals(name, student.name);
+        return age == student.age && Objects.equals(id, student.id) && Objects.equals(name, student.name) && Objects.equals(faculty, student.faculty);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, age);
+        return Objects.hash(id, name, age, faculty);
     }
 }
