@@ -20,34 +20,34 @@ public class FacultyController {
 
     @GetMapping("/{id}")
     public Faculty getFaculty(@PathVariable Long id) {
-        return facultyService.get(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Факультет с ID: " + id + ", не найден"));
+        return facultyService.getFaculty(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Факультет с ID: " + id + ", не найден"));
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public Collection<Faculty> getAllFaculties() {
-        return facultyService.getAll();
+        return facultyService.getAllFaculties();
     }
 
     @GetMapping(params = "color")
     public Collection<Faculty> getFacultiesByColor(@RequestParam String color) {
-        return facultyService.getByColor(color);
+        return facultyService.getFacultyByColor(color);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Faculty addFaculty(@RequestBody Faculty faculty) {
-        return facultyService.add(faculty);
+        return facultyService.addFaculty(faculty);
     }
 
     @PutMapping
     public Faculty updateFaculty(@RequestBody Faculty faculty) {
-        return facultyService.update(faculty).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Факультет с ID: " + faculty.getId() + ", не найден"));
+        return facultyService.updateFaculty(faculty).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Факультет с ID: " + faculty.getId() + ", не найден"));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFaculty(@PathVariable Long id) {
-        if (!facultyService.delete(id).isPresent()) {
+        if (!facultyService.deleteFaculty(id).isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Факультет с ID: " + id + ", не найден");
         }
     }

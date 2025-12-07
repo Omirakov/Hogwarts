@@ -1,18 +1,26 @@
 package ru.hogwarts.school.model;
 
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
+@Entity
 public class Faculty {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String color;
 
-    public Faculty(Long id, String name, String color) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException("ID не может быть меньше или равен нулю, а также null");
-        }
-        this.id = id;
+    public Faculty() {
+    }
+
+    public Faculty(String name, String color) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Имя не может быть null или пустой строкой");
         }
@@ -25,13 +33,6 @@ public class Faculty {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException("ID не может быть меньше или равен нулю, а также null");
-        }
-        this.id = id;
     }
 
     public String getName() {

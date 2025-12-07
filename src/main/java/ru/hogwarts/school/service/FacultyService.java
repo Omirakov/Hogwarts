@@ -2,49 +2,49 @@ package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 @Service
 public class FacultyService {
 
-    private final HashMap<Long, Faculty> facultyHashMap = new HashMap<>();
-    private final AtomicLong nextId = new AtomicLong(1);
+    private final FacultyRepository facultyRepository;
 
-    public Faculty add(Faculty faculty) {
-        long id = nextId.getAndIncrement();
-        faculty.setId(id);
-        facultyHashMap.put(id, faculty);
-        return faculty;
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
     }
 
-    public Optional<Faculty> get(Long id) {
-        return Optional.ofNullable(facultyHashMap.get(id));
+    public Faculty addFaculty(Faculty faculty) {
+        return facultyRepository.save(faculty);
     }
 
-    public Collection<Faculty> getAll() {
-        return facultyHashMap.values();
+    public Optional<Faculty> getFaculty(Long id) {
+        return facultyRepository.findById(id);
     }
 
-    public Collection<Faculty> getByColor(String color) {
-        return facultyHashMap.values().stream().filter(faculty -> faculty.getColor().equalsIgnoreCase(color)).collect(Collectors.toList());
+    public Collection<Faculty> getAllFaculties() {
+        return facultyRepository.findAll();
     }
 
-    public Optional<Faculty> update(Faculty faculty) {
-        if (facultyHashMap.containsKey(faculty.getId())) {
-            facultyHashMap.put(faculty.getId(), faculty);
-            return Optional.of(faculty);
+    public Collection<Faculty> getFacultyByColor(String color) {
+        return facultyRepository.findByColorIgnoreCase(color);
+    }
+
+    public Optional<Faculty> updateFaculty(Faculty faculty) {
+        if (faculty.getId() == null || !facultyRepository.existsById(faculty.getId())) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        Faculty updated = facultyRepository.save(faculty);
+        return Optional.of(updated);
     }
 
-    public Optional<Faculty> delete(Long id) {
-        Faculty removedFaculty = facultyHashMap.remove(id);
-        return Optional.ofNullable(removedFaculty);
+    public Optional<Faculty> deleteFaculty(Long id) {
+        Optional<Faculty> faculty = facultyRepository.findById(id);
+        if (faculty.isPresent()) {
+            facultyRepository.deleteById(id);
+        }
+        return faculty;
     }
 }
