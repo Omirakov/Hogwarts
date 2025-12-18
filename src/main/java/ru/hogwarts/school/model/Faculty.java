@@ -2,6 +2,8 @@ package ru.hogwarts.school.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,6 +18,9 @@ public class Faculty {
 
     @Column(nullable = false)
     private String color;
+
+    @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
+    private List<Student> students = new ArrayList<>();
 
     public Faculty() {
     }
@@ -55,6 +60,14 @@ public class Faculty {
             throw new IllegalArgumentException("Цвет не может быть null или пустой строкой");
         }
         this.color = color;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 
     @Override
