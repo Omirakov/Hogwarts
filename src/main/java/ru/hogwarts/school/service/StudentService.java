@@ -6,6 +6,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -61,5 +62,17 @@ public class StudentService {
             studentRepository.deleteById(id);
         }
         return student;
+    }
+
+    public Long getTotalStudentsCount() {
+        return studentRepository.countAllStudents();
+    }
+
+    public double getAverageAge() {
+        return Optional.ofNullable(studentRepository.getAverageAge()).orElse(0.0);
+    }
+
+    public List<Student> getTop5Students() {
+        return studentRepository.findTop5ByOrderByIdDesc();
     }
 }
